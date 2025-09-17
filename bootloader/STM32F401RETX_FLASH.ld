@@ -45,7 +45,7 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 96K
-  FLASH    (rx)    : ORIGIN = 0x8008000,   LENGTH = 512K
+  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 32K
 }
 
 /* Sections */
@@ -59,7 +59,20 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
-	  
+
+  /*custom block in RAM*/
+  .custom_ram_block 0x20000100(NOLOAD) :
+  {
+	 /*Keep variables even if they are not referenced*/
+	KEEP(*(.custom_ram_block))
+  } >RAM
+  
+  .custom_flash_block 0x8004000 :
+  {
+	 /*Keep variables even if they are not referenced*/
+	KEEP(*(.custom_flash_block))
+  } >FLASH
+  
   /* The program code and other data into "FLASH" Rom type memory */
   .text :
   {
